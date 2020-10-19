@@ -1,0 +1,38 @@
+{
+  "title": "Book",
+  "description": "Manuscript to print stage tracking for books.",
+  "type": "object",
+  "properties": {
+
+    "id": {
+      "description": "UUID serving as a unique identifier",
+      "type": ["string", "integer"]
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 2500
+    },
+    "authors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+
+    "stage": {
+      "enum": [
+        "Received",
+        "Reviewed",
+        "Accepted",
+        "Contract Signed",
+        "Edited",
+        "Copyedited",
+        "Typeset",
+        "In Print"
+      ]
+    },
+    "editor": { "type": "string", "minLength": 1 },
+    "pcp": { "type": "string" }
+  },
+  "required": ["id", "title", "authors", "stage", "editor", "pcp"]
+}
