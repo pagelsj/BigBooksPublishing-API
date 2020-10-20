@@ -1,5 +1,5 @@
 app: BigBooksPublishing
-service: project-state
+service: book-state
 
 provider:
   name: aws
@@ -42,7 +42,7 @@ functions:
     handler: handlers/delete.delete
     events:
       - http:
-          path: ${self:service}/{title}
+          path: ${self:service}/{id}
           method: delete
           cors: true
           # authorizer:
@@ -62,7 +62,7 @@ functions:
     handler: handlers/read.read
     events:
       - http:
-          path: ${self:service}/{title}
+          path: ${self:service}/{id}
           method: get
           cors: true
           # authorizer:

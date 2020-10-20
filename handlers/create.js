@@ -15,6 +15,8 @@ module.exports.create = (event, context, callback) => {
   let valid = ajv.validate(schema, data);
 
   if(valid) {
+    let response = {};
+
     const timestamp = new Date().getTime();
     const params = {
       TableName: process.env.DYNAMODB_TABLE,
@@ -32,22 +34,23 @@ module.exports.create = (event, context, callback) => {
 
     dynamoDb.put(params, (error) => {
       if (error) {
-        console.log('error', error);
-        callback(null, {
+        response = {
           statusCode: error.statusCode || 501,
           headers: { 'Content-Type': 'text/plain' },
           body: 'There was an error adding new article insight to the DB. Try again later. ' + error,
-        });
-        return;
+        };
+
+      } else {
+
+        response = {
+          statusCode: 200,
+          headers: {
+            "Content-Type": "application/json",
+            'Access-Control-Allow-Origin': '*'
+          },
+          body: JSON.stringify(params.Item),
+        };
       }
-      const response = {
-        statusCode: 200,
-        headers: {
-          "Content-Type": "application/json",
-          'Access-Control-Allow-Origin': '*'
-        },
-        body: JSON.stringify(params.Item),
-      };
       callback(null, response);
     });
 

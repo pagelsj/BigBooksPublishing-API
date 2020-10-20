@@ -15,6 +15,7 @@ module.exports.update = (event, context, callback) => {
   let valid = ajv.validate(schema, data);
 
   if(valid) {
+    let response = {};
 
     const params = {
       TableName: process.env.DYNAMODB_TABLE,
@@ -43,8 +44,8 @@ module.exports.update = (event, context, callback) => {
 
     dynamoDb.update(params, (error, success) => {
       if (error) {
-        console.log('ERROR: id', data.id);
-        callback(null, {
+
+        response = {
           statusCode: error.statusCode || 501,
           headers: {
             'Content-Type': 'application/json',
@@ -53,18 +54,18 @@ module.exports.update = (event, context, callback) => {
           body: `There was an error Updating the item.
             Id: ${data.id}.
             Message: ${JSON.stringify(error, null, 2)}`,
-        });
-        return;
-      }
+        };
 
-      const response = {
-        statusCode: 200,
-  	    headers: {
-          "Content-Type": "application/json",
-  	      'Access-Control-Allow-Origin': '*'
-  	    },
-        body: JSON.stringify({success: true}),
-      };
+      } else {
+        response = {
+          statusCode: 200,
+    	    headers: {
+            "Content-Type": "application/json",
+    	      'Access-Control-Allow-Origin': '*'
+    	    },
+          body: JSON.stringify({success: true}),
+        };
+      }
 
       callback(null, response);
     });
